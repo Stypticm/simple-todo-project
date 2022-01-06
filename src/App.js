@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import { Link } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+
+import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="main_container">
+      <Stack spacing={10}>
+        <TextField
+          id="standard-basic"
+          label="Login"
+          variant="standard"
+          color="success"
+        />
+        <TextField
+          id="standard-basic"
+          label="Password"
+          variant="standard"
+          type="password"
+          color="success"
+        />
+        <Stack direction="row" spacing={5}>
+          <Button variant="contained">
+            <Link
+              to="/authentication"
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              Sign In
+            </Link>
+          </Button>
+          <Button variant="contained">
+            <Link
+              to="/registration"
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              Sign Up
+            </Link>
+          </Button>
+        </Stack>
+      </Stack>
     </div>
   );
 }

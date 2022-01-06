@@ -1,7 +1,8 @@
-.main_container {
-    height: 100vh;
-    width: 100vw;
+.page404 {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+    font-size: 30px;
+    color: white;
 }
