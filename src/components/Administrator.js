@@ -1,11 +1,21 @@
-import React from 'react'
+import React from "react";
 
-function Administrator() {
-    return (
-        <div>
-            Admin Panel
-        </div>
-    )
-}
+const Administrator = () => {
+  const [todos, setTodos] = React.useState([]);
 
-export default Administrator
+  React.useEffect(() => {
+    fetch("http://localhost:5000/todos")
+    .then((res) => res.json())
+    .then((data) => setTodos(data));
+  }, [todos])
+
+  return (
+    <div>
+      {todos.map((todos) => (
+        <li key={todos._id} style={{listStyle:'none' }}>{todos.title}</li>
+      ))}
+    </div>
+  );
+};
+
+export default Administrator;
