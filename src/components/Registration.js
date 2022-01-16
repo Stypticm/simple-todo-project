@@ -1,23 +1,32 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Stack } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function Registration() {
+  let navigate = useNavigate()
+
   const [form, setForm] = React.useState({
     nickname: "",
-    login: "",
+    email: "",
     password: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(`${form.nickname}, ${form.login}, ${form.password}`);
+    console.log(`${form.nickname}, ${form.email}, ${form.password}`);
     setForm({
       nickname: "",
-      login: "",
+      email: "",
       password: "",
     });
   };
+
+  const handleBack = (e) => {
+    e.preventDefault()
+    navigate('/')
+  }
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -26,7 +35,7 @@ function Registration() {
           borderRadius: "16px",
           border: "1px solid black",
           padding: "20px",
-          marginTop: "20vh",
+          marginTop: "10vh",
         }}
       >
         <form onSubmit={handleSubmit}>
@@ -45,9 +54,9 @@ function Registration() {
             />
             <TextField
               helperText="Please enter your login"
-              id="login"
-              label="login"
-              value={form.login}
+              id="email"
+              label="email"
+              value={form.email}
               onChange={(e) =>
                 setForm((prevState) => ({
                   ...prevState,
@@ -71,6 +80,7 @@ function Registration() {
             <Button variant="contained" type="submit" endIcon={<SendIcon />}>
               Sign up
             </Button>
+            <Button variant="contained" onClick={handleBack} endIcon={<ArrowBackIcon />}>Back</Button>
           </Stack>
         </form>
       </Box>

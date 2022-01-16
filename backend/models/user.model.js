@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const { isEmail } = require("validator");
 
 const Schema = mongoose.Schema;
@@ -34,10 +34,6 @@ userSchema.pre("save", async function save(next) {
     return next(err);
   }
 });
-
-userSchema.methods.validatePassword = async function validatePassword(data) {
-  return bcrypt.compare(data, this.password);
-};
 
 const User = mongoose.model("User", userSchema);
 
