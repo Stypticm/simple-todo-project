@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Stack, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { checkUsers } from "../features/users/usersSlice";
+import { checkUsers, fetchUsers } from "../features/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./authPage.css";
 
@@ -28,6 +28,11 @@ const Auth = () => {
     e.preventDefault()
     navigate('/registration')
   }
+
+  React.useEffect(() => {
+    dispatch(fetchUsers())
+    // eslint-disable-next-line
+  }, [])
 
   React.useEffect(() => {
     if (isAuth) navigate("/todolist");

@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-router.post("/one/:email-:password", async (req, res) => {  
+router.post("/one/:email-:password", async (req, res) => {
   const email = req.params.email;
   const password = req.params.password;
 
@@ -31,18 +31,26 @@ router.get("/:id", (req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-router.post("/add", (req, res) => {
+router.post("/add", async (req, res) => {
   const nickname = req.body.nickname;
   const email = req.body.email;
   const password = req.body.password;
 
-  const newUser = new User({ nickname, email, password });
+  const user = await User.findOne({ email: email });
 
-  newUser
-    .save()
-    .then(() => res.json("User added!"))
-    .then(() => res.json(newUser))
-    .catch((err) => res.status(400).json("Error: " + err));
+  if (user) {
+    res.status(409).json({ Error: "Email already exist" });
+  } else if (email === '') {
+    res.status(204).json({ Error: "No content"})
+  } else {
+    const newUser = new User({ nickname, email, password });
+
+    newUser
+      .save()
+      .then(() => res.json("User added!"))
+      .then(() => res.json(newUser))
+      .catch((err) => res.status(400).json("Error: " + err));
+  }
 });
 
 module.exports = router;

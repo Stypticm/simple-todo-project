@@ -15,7 +15,7 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Auth />}/>
+        <Route path="/" element={<Auth />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/404" element={<PageError />} />
         <Route path="/administrator" element={<Administrator />} />

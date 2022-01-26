@@ -1,16 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const initialState = {
-  isLoading: false,
-  error: "",
-  users: [],
-  isAuth: false,
-};
-
 export const usersSlice = createSlice({
   name: "allUsers",
-  initialState,
+  initialState: {
+    isLoading: false,
+    error: false,
+    users: [],
+    isAuth: false,
+  },
   reducers: {
     setLoading: (state) => {
       state.isLoading = true;
@@ -38,7 +36,8 @@ export const usersSlice = createSlice({
   },
 });
 
-export const { setError, setUsers, setLoading, setAuth, setLogOut } = usersSlice.actions;
+export const { setError, setUsers, setLoading, setAuth, setLogOut } =
+  usersSlice.actions;
 
 export const usersSelector = (state) => state;
 
@@ -65,6 +64,30 @@ export const checkUsers = (email, password) => async (dispatch) => {
           dispatch(setAuth());
         } else {
           console.log(res.status);
+        }
+      });
+  } catch (error) {
+    dispatch(setError());
+  }
+};
+
+// registration
+export const regUser = (nickname, email, password) => async (dispatch) => {
+  dispatch(setLoading());
+  try {
+    axios
+      .post("http://localhost:5000/users/add", {
+        "nickname": nickname,
+        "email": email,
+        "password": password,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(setAuth());
+        } else {
+          if (res.status === 204 || res.status === 409) {
+            dispatch(setError())
+          }
         }
       });
   } catch (error) {
