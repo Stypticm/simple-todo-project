@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
-let User = require("../models/user.model");
+// const uuid = require("uuid").v4;
+// const session = require("express-session");
+const User = require("../models/user.model");
 
 router.get("/", (req, res) => {
   User.find()
@@ -13,22 +15,20 @@ router.post("/one/:email-:password", async (req, res) => {
   const password = req.params.password;
 
   const user = await User.findOne({ email: email });
-  if (user) {
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (validPassword) {
-      res.status(200).json({ message: "Valid password" });
+  try {
+    if (user) {
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (validPassword) {
+        res.status(200).json({ message: "Valid password", user });
+      } else {
+        res.status(400).json({ error: "Invalid Password" });
+      }
     } else {
-      res.status(400).json({ error: "Invalid Password" });
+      res.status(401).json({ error: "User does not exist" });
     }
-  } else {
-    res.status(401).json({ error: "User does not exist" });
+  } catch (err) {
+    res.send(err);
   }
-});
-
-router.get("/:id", (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => res.json(user.id))
-    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.post("/add", async (req, res) => {
@@ -40,14 +40,14 @@ router.post("/add", async (req, res) => {
 
   if (user) {
     res.status(409).json({ Error: "Email already exist" });
-  } else if (email === '') {
-    res.status(204).json({ Error: "No content"})
+  } else if (email === "") {
+    res.status(204).json({ Error: "No content" });
   } else {
     const newUser = new User({ nickname, email, password });
 
     newUser
       .save()
-      .then(() => res.json("User added!"))
+      .then(() => res.json({message: "User added!", newUser}))
       .then(() => res.json(newUser))
       .catch((err) => res.status(400).json("Error: " + err));
   }

@@ -7,7 +7,7 @@ import "./authPage.css";
 
 const Auth = () => {
   const dispatch = useDispatch();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const isAuth = useSelector((state) => state.users.isAuth);
 
   const [form, setForm] = React.useState({
@@ -47,6 +47,7 @@ const Auth = () => {
           variant="standard"
           color="success"
           value={form.email}
+          type="search"
           onChange={(e) => {
             setForm((prevState) => ({
               ...prevState,
