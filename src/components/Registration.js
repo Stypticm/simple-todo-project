@@ -52,8 +52,6 @@ function Registration() {
     if (isAuth) navigate("/todolist");
   }, [isAuth, navigate]);
 
-  console.log(error)
-
   return (
     <>
       {error ? (

@@ -32,6 +32,7 @@ export const usersSlice = createSlice({
       state.isLoading = false;
       state.error = false;
       state.isAuth = false;
+      state.users = []
     },
   },
 });
@@ -46,7 +47,7 @@ export const fetchUsers = () => async (dispatch) => {
   dispatch(setLoading());
   try {
     axios.get("http://localhost:5000/users").then((response) => {
-      dispatch(setUsers(response.data));
+      dispatch(setUsers(response.data)); 
     });
   } catch (error) {
     dispatch(setError());
@@ -61,6 +62,7 @@ export const checkUsers = (email, password) => async (dispatch) => {
       .post(`http://localhost:5000/users/one/${email}-${password}`)
       .then((res) => {
         if (res.status === 200) {
+          dispatch(setUsers(res.data.user._id))
           dispatch(setAuth());
         } else {
           console.log(res.status);
@@ -83,6 +85,7 @@ export const regUser = (nickname, email, password) => async (dispatch) => {
       })
       .then((res) => {
         if (res.status === 200) {
+          dispatch(setUsers(res.data.newUser._id))
           dispatch(setAuth());
         } else {
           if (res.status === 204 || res.status === 409) {

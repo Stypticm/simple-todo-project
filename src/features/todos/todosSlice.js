@@ -1,14 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
   isLoading: false,
-  error: '',
+  error: "",
   todos: [],
-}
+  status: "",
+};
 
 export const todosSlice = createSlice({
-  name: 'todolist',
+  name: "todolist",
   initialState,
   reducers: {
     setLoading: (state) => {
@@ -23,25 +24,85 @@ export const todosSlice = createSlice({
       state.isLoading = false;
       state.error = true;
     },
+    setStatus: (state, { payload }) => {
+      state.status = payload;
+    },
   },
-})
+});
 
-export const { setError, setTodos, setLoading } = todosSlice.actions
+export const { setError, setTodos, setLoading, setStatus } = todosSlice.actions;
 
-export const todosSelector = (state) => state.todos
+export const todosSelector = (state) => state.todos;
 
 // fetch all
-export const fetchTodos = () => async (dispatch) => {
+export const fetchTodos = (userId) => (dispatch) => {
   dispatch(setLoading());
 
   try {
-    axios.get("http://localhost:5000/todos").then((response) => {
-      dispatch(setTodos(response.data));
+    axios.get(`http://localhost:5000/todos/${userId}`).then((response) => {
+      const data = response.data;
+      const result = data.filter((item) => item.objId === userId);
+      if (data.length === 0) {
+        dispatch(setTodos([]));
+      } else {
+        dispatch(setTodos(result));
+      }
     });
   } catch (error) {
     dispatch(setError());
   }
 };
 
-export default todosSlice.reducer
+// add todo
+export const addTodo = (userId, title, description, date) => (dispatch) => {
+  dispatch(setLoading());
+  try {
+    axios
+      .post(`http://localhost:5000/todos/add/${userId}`, {
+        title: title,
+        description: description,
+        date: date,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(fetchTodos(userId));
+          dispatch(setStatus(res.status));
+        } else {
+          dispatch(setError());
+        }
+      });
+  } catch (error) {
+    dispatch(setError());
+  }
+};
 
+// delete todo
+export const deleteTodo = (idTodo, userId) => (dispatch) => {
+  dispatch(setLoading());
+  try {
+    axios.delete(`http://localhost:5000/todos/${idTodo}`).then(() => {
+      dispatch(fetchTodos(userId));
+    });
+  } catch (error) {
+    dispatch(setError());
+  }
+};
+
+export const editTodo =
+  (userId, title, description, date, id) => async (dispatch) => {
+    dispatch(setLoading());
+    try {
+      axios.put(`http://localhost:5000/todos/update/${id}`, {
+        title: title,
+        description: description,
+        date: date,
+        objId: userId
+      }).then(() => {
+        dispatch(fetchTodos(userId))
+      })
+    } catch (error) {
+      dispatch(setError());
+    }
+  };
+
+export default todosSlice.reducer;

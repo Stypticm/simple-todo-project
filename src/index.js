@@ -11,6 +11,7 @@ import PageError from "./components/PageError";
 import Administrator from "./components/Administrator";
 import TodoList from "./components/TodoList";
 
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
@@ -19,11 +20,12 @@ ReactDOM.render(
         <Route path="/registration" element={<Registration />} />
         <Route path="/404" element={<PageError />} />
         <Route path="/administrator" element={<Administrator />} />
-        <Route path="/todolist" element={<TodoList />} />
+        <Route path="/todolist" element={<TodoList />}/>
       </Routes>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")
 );
+
 
 serviceWorker.register();
