@@ -9,5 +9,5 @@
 
 ## Functions:
 `- Login / Password`
-`- Simple ToDo list`
+`- ToDo list`
 `- Unique ToDo list for each user`
