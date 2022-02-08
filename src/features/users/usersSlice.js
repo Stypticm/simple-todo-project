@@ -8,6 +8,7 @@ export const usersSlice = createSlice({
     error: false,
     users: [],
     isAuth: false,
+    nickname: "",
   },
   reducers: {
     setLoading: (state) => {
@@ -32,13 +33,23 @@ export const usersSlice = createSlice({
       state.isLoading = false;
       state.error = false;
       state.isAuth = false;
-      state.users = []
+      state.users = [];
+      state.nickname = "";
+    },
+    setNickName: (state, { payload }) => {
+      state.nickname = payload;
     },
   },
 });
 
-export const { setError, setUsers, setLoading, setAuth, setLogOut } =
-  usersSlice.actions;
+export const {
+  setError,
+  setUsers,
+  setLoading,
+  setAuth,
+  setNickName,
+  setLogOut,
+} = usersSlice.actions;
 
 export const usersSelector = (state) => state;
 
@@ -47,7 +58,19 @@ export const fetchUsers = () => async (dispatch) => {
   dispatch(setLoading());
   try {
     axios.get("http://localhost:5000/users").then((response) => {
-      dispatch(setUsers(response.data)); 
+      dispatch(setUsers(response.data));
+    });
+  } catch (error) {
+    dispatch(setError());
+  }
+};
+
+// fetch user nickname
+export const fetchUserNickname = (id) => async (dispatch) => {
+  dispatch(setLoading());
+  try {
+    axios.get(`http://localhost:5000/users/${id}`).then((response) => {
+      dispatch(setNickName(response.data));
     });
   } catch (error) {
     dispatch(setError());
@@ -62,7 +85,7 @@ export const checkUsers = (email, password) => async (dispatch) => {
       .post(`http://localhost:5000/users/one/${email}-${password}`)
       .then((res) => {
         if (res.status === 200) {
-          dispatch(setUsers(res.data.user._id))
+          dispatch(setUsers(res.data.user._id));
           dispatch(setAuth());
         } else {
           console.log(res.status);
@@ -79,17 +102,17 @@ export const regUser = (nickname, email, password) => async (dispatch) => {
   try {
     axios
       .post("http://localhost:5000/users/add", {
-        "nickname": nickname,
-        "email": email,
-        "password": password,
+        nickname: nickname,
+        email: email,
+        password: password,
       })
       .then((res) => {
         if (res.status === 200) {
-          dispatch(setUsers(res.data.newUser._id))
+          dispatch(setUsers(res.data.newUser._id));
           dispatch(setAuth());
         } else {
           if (res.status === 204 || res.status === 409) {
-            dispatch(setError())
+            dispatch(setError());
           }
         }
       });

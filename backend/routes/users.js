@@ -10,6 +10,12 @@ router.get("/", (req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.get("/:id", (req, res) => {
+  User.findById(req.params.id)
+    .then((user) => res.json(user.nickname))
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
 router.post("/one/:email-:password", async (req, res) => {
   const email = req.params.email;
   const password = req.params.password;
@@ -47,7 +53,7 @@ router.post("/add", async (req, res) => {
 
     newUser
       .save()
-      .then(() => res.json({message: "User added!", newUser}))
+      .then(() => res.json({ message: "User added!", newUser }))
       .then(() => res.json(newUser))
       .catch((err) => res.status(400).json("Error: " + err));
   }
