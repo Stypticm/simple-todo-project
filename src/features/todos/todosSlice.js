@@ -36,8 +36,6 @@ export const todosSelector = (state) => state.todos;
 
 // fetch all
 export const fetchTodos = (userId) => (dispatch) => {
-  dispatch(setLoading());
-
   try {
     axios.get(`http://localhost:5000/todos/${userId}`).then((response) => {
       const data = response.data;

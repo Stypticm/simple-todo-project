@@ -33,7 +33,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { setLogOut } from "../features/users/usersSlice";
+import { fetchUserNickname, setLogOut } from "../features/users/usersSlice";
 import moment from "moment";
 
 function TodoList() {
@@ -43,6 +43,7 @@ function TodoList() {
   const { todos, loading, error } = useSelector(todosSelector);
   const isAuth = useSelector((state) => state.users.isAuth);
   const userId = useSelector((state) => state.users.users);
+  const nickname = useSelector((state) => state.users.nickname);
 
   const [openAddW, setOpenAddW] = React.useState(false);
   const [openEditW, setOpenEditW] = React.useState(false);
@@ -53,10 +54,17 @@ function TodoList() {
   });
 
   React.useEffect(() => {
+    dispatch(fetchUserNickname(userId));
+    // eslint-disable-next-line
+  }, []);
+
+  React.useEffect(() => {
     dispatch(fetchTodos(userId));
 
     if (!isAuth) navigate("/");
-  }, [dispatch, navigate, userId, isAuth, todos]);
+  }, [dispatch, navigate, userId, isAuth]);
+
+  const memoTodos = React.useMemo(() => [...todos], [todos]);
 
   const handleBack = (e) => {
     e.preventDefault();
@@ -122,14 +130,14 @@ function TodoList() {
   const renderTodos = () => {
     if (loading) return <PageLoading />;
     if (error) return <PageError />;
-    if (todos.length === 0)
+    if (memoTodos.length === 0)
       return (
         <Typography variant="h4" component="div">
           You don't have todos
         </Typography>
       );
 
-    return todos.map((item) => (
+    return memoTodos.map((item) => (
       <Grid item xs={12} md={6} key={item._id}>
         <Card sx={{ bgcolor: "text.disabled", borderRadius: 5 }}>
           <CardContent>
@@ -305,7 +313,7 @@ function TodoList() {
               component="div"
               sx={{ alignSelf: "center" }}
             >
-              User nickname
+              {nickname}
             </Typography>
           </Container>
           <Container>
